@@ -139,7 +139,8 @@ INSTALLED_APPS = (
     'devilry.core',
     'devilry.ui',
     'devilry.adminscripts',
-    'devilry.addons.gradestats'
+    'devilry.addons.gradestats',
+    'devilry.rst'
 )
 
 

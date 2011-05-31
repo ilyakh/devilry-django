@@ -31,41 +31,54 @@ tot_groups = 0
 tot_deliveries = 0
 all_students = set()
 for subject in Subject.objects.all():
+    print
     print subject.short_name
+    print '-----------------------'
     for period in subject.periods.all():
         print "    %s" % period.short_name
         assignments = period.assignments.all()
         period_deliveries = 0
         period_groups = 0
+        period_students = set()
         for assignment in assignments:
-            print "        %s" % assignment
             groups = assignment.assignmentgroups.all()
-            tot_assignments += 1
-            period_groups += len(groups)
-            group_deliveries = 0
-            student_count = 0
-            for group in groups:
-                group_deliveries += len(group.deliveries.all())
-                for candidate in group.candidates.all():
-                    all_students.add(candidate.student)
-                    student_count += 1
-            avg_students_per_group = float(student_count)/len(groups)
-            group_deliveries += group_deliveries
-            print "            Groups: %d" % len(groups)
-            print "            Deliveries: %d" % group_deliveries
-            print "            Avg number of students per group: %s" % avg_students_per_group
+            if len(groups) > 0:
+                print "        %s" % assignment
+                tot_assignments += 1
+                group_deliveries = 0
+                student_count = 0
+                assignment_groupcount = 0
+                for group in groups:
+                    candidates = group.candidates.all()
+                    if len(candidates) > 0:
+                        group_deliveries += len(group.deliveries.all())
+                        assignment_groupcount += 1
+                        for candidate in candidates:
+                            period_students.add(candidate.student)
+                            student_count += 1
+                if(len(groups)) > 0:
+                    avg_students_per_group = float(student_count)/assignment_groupcount
+                else:
+                    avg_students_per_group = 0
+                period_deliveries += group_deliveries
+                period_groups += assignment_groupcount
+                print "            Groups: %d" % assignment_groupcount
+                print "            Deliveries: %d" % group_deliveries
+                print "            Avg number of students per group: %s" % avg_students_per_group
         tot_deliveries += period_deliveries
         tot_groups += period_groups
+        all_students.update(period_students)
         print
         print "        Summary %s" % period
         print "            Assignments: %d" % len(assignments)
-        print "            Groups: %d" % period_deliveries
+        print "            Students: %d" % len(period_students)
+        print "            Groups: %d" % period_groups
         print "            Deliveries: %d" % period_deliveries
 tot_students = len(all_students)
 
 print """
-Total assignments = %(tot_assignments)d
-Total groups = %(tot_groups)d
-Total deliveries: %(tot_deliveries)d
-Total number of students = %(tot_students)d
+Total Assignments = %(tot_assignments)d
+Total Students = %(tot_students)d
+Total Groups = %(tot_groups)d
+Total Deliveries: %(tot_deliveries)d
 """ % vars()

@@ -85,10 +85,19 @@ class RelatedNodeChildren( ListModelView ):
         return nodes
 
 
+class PeriodResource( ModelResource ):
+    model = Period
+    fields = ( 'id', 'short_name', )
 
 class NodeSubjectResource( ModelResource ):
     model = Subject
-    fields = ( 'id', 'short_name', 'long_name', )
+    fields = ( 'id', 'short_name', 'long_name', 'periods', )
+
+    def periods( self, instance ):
+        resource = PeriodResource()
+        periods = Period.objects.filter( parentnode=instance )
+        return resource.serialize_iter( periods )
+
 
 class NodeDetailsResource( NodeResource ):
     model = Node

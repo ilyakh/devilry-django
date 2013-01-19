@@ -323,7 +323,7 @@ ExtJS Stores
 * Fixed the firefox and IE issue: js attempts to parse html-output of rest framework instead of the json. Seems to be a url-issue, which requires and appendage of format=json to the url.
 * Fixed the breadcrumb with a temporary solution that does what it should. Some tuning is due to display the current node (the last element in the path that doesn't have a link).
 * Complete nodeLookup.js for nodeadmin, use in breadcrumbs.
-* [+] Disable default view pagination.
+* [x] Disable default view pagination. This is a request-only pagination that server can ignore. [!] Test.
 * [+] Deal with pluralization and zero element count.
 * [+] Store sorting
 * [x] Fix the date format in node browser.

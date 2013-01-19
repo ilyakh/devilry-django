@@ -60,5 +60,57 @@
   h3 {
     font-style: italic;
   }
+
+  .subject {
+    max-width: 400px; /* element width */
+    padding: 0.2em 0.2em 0.5em 0.2em;
+    margin: 0.5em 0em 10px 0.5em;
+
+    border: 1px solid rgb( 220, 220, 220 );
+    border-radius: 0.5em;
+
+    overflow: auto;
+  }
+
+  .subject-name {
+    clear: both;
+    padding: 1em 0.2em 0em 0.6em;
+  }
+
+  .active {
+    float: left;
+    width: 30%;
+  }
+  .inactive {
+    float: left;
+    width: 65%;
+  }
+  .period {
+    float: left;
+    width: 32%; /* period block width */
+    display: inline-block;
+    padding: 2px;
+
+    text-align: left;
+  }
+
+  .period a {
+    font-style: italic;
+    text-decoration: none;
+  }
+
+  .period-active {
+    text-align: center;
+    font-weight: bold;
+    font-size: 2em;
+    min-width: 100px;
+
+    padding: 0em 0.2em 0.5em 0.2em;
+  }
+
+  .period-ellipsis {
+
+  }
+
 }
 

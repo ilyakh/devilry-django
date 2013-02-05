@@ -19,27 +19,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         'devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow'
     ],
 
-    title: interpolate(gettext('%(Deliveries_term)s grouped by %(deadline_term)s'), {
-        Deliveries_term: gettext('Deliveries'),
-        deadline_term: gettext('deadline')
-    }, true),
-
     autoScroll: true,
+//    style: 'border-right: 1px solid #ddd !important; border-top: 1px solid #ddd !important;',
+    border: 1,
 
     /**
-    * @cfg
+    * @cfg {string} [role]
     */
     role: undefined,
 
     /**
-    * @cfg
+    * @cfg {object} [assignmentgroup_recordcontainer]
     * AssignmentGroup record container. The view is reloaded on the setRecord
     * event.
     */
     assignmentgroup_recordcontainer: undefined,
 
     /**
-    * @cfg
+    * @cfg {object} [delivery_recordcontainer]
     * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
     * The record is changed when a user selects a delivery.
     */
@@ -56,19 +53,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         if(this.assignmentgroup_recordcontainer.record) {
             this._onLoadAssignmentGroup();
         }
-        if(this.role !== 'student') {
-            this.bbar = [{
-                xtype: 'button',
-                text: interpolate(gettext('New %(deadline_term)s'), {
-                    deadline_term: gettext('deadline')
-                }, true),
-                iconCls: 'icon-add-16',
-                listeners: {
-                    scope: this,
-                    click: this.onCreateNewDeadline
-                }
-            }];
-        }
+
         this.callParent(arguments);
         this.on('render', function() {
             Ext.defer(function() {
@@ -80,24 +65,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     _onLoadAssignmentGroup: function(groupRecordContainer) {
         var groupRecord = groupRecordContainer.record;
         this.loadAllDeadlines();
-        if(this.role === 'student' && groupRecord.get('is_open')) {
-            this.addDocked({
-                xtype: 'toolbar',
-                dock: 'bottom',
-                ui: 'footer',
-                items: [{
-                    xtype: 'box',
-                    tpl: '<a href="../add-delivery/{groupId}">{text}</a>',
-                    padding: '5 0 5 0',
-                    data: {
-                        text: interpolate(gettext('Add %(delivery_term)s'), {
-                            delivery_term: gettext('delivery')
-                        }),
-                        groupId: groupRecord.get('id')
-                    }
-                }]
-            });
-        }
     },
 
 
@@ -156,7 +123,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                 if(deliveryRecords.length === 0) {
                     this.addDeliveriesPanel(deadlineRecords, deadlineRecord, deliveriesStore);
                 } else {
-                    this.findLatestFeebackInDeadline(deadlineRecords, deadlineRecord, deliveriesStore, deliveryRecords)
+                    this.findLatestFeebackInDeadline(deadlineRecords, deadlineRecord, deliveriesStore, deliveryRecords);
                 }
             }
         });
@@ -164,8 +131,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
 
     _handleLatestDeadline: function(deadlineRecord, deliveryRecords) {
         var is_open = this.assignmentgroup_recordcontainer.record.get('is_open');
-        if(this.role != 'student' && deliveryRecords.length === 0 && deadlineRecord.get('deadline') < Ext.Date.now() && is_open) {
-            this._onExpiredNoDeliveries();
+        if(this.role !== 'student' && deliveryRecords.length === 0 && deadlineRecord.get('deadline') < Ext.Date.now() && is_open) {
+            this.fireEvent('expiredNoDeliveries');
         }
     },
 
@@ -187,7 +154,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                         this.addDeliveriesPanel(deadlineRecords, deadlineRecord, deliveriesStore, activeFeedback);
                     }
                 }
-            })
+            });
         }, this);
     },
 
@@ -228,6 +195,25 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             this.getEl().unmask();
             this.isLoading = false;
             this.fireEvent('loadComplete', this);
+            this._onLoadComplete();
+        }
+    },
+
+    _onLoadComplete:function () {
+        var group = this.assignmentgroup_recordcontainer.record;
+        if(group.get('parentnode__delivery_types') !== 1) {
+            this.add({
+                xtype: 'button',
+                scale: 'medium',
+                text: '<i class="icon-time"></i> ' + gettext('New deadline'),
+                cls: 'bootstrap',
+                listeners: {
+                    scope: this,
+                    click:function () {
+                        this.fireEvent('createNewDeadline');
+                    }
+                }
+            });
         }
     },
 
@@ -269,48 +255,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         });
     },
 
-
-    /**
-     * @private
-     */
-    onCreateNewDeadline: function() {
-        var me = this;
-        var createDeadlineWindow = Ext.widget('createnewdeadlinewindow', {
-            assignmentgroupid: this.assignmentgroup_recordcontainer.record.data.id,
-            deadlinemodel: Ext.String.format('devilry.{0}.models.Deadline', this.role),
-            onSaveSuccess: function(record) {
-                this.close();
-                me.loadAllDeadlines();
-            }
-        });
-        createDeadlineWindow.show();
-    },
-
-
-    /**
-     * @private
-     */
-    _onExpiredNoDeliveries: function() {
-        var win = Ext.MessageBox.show({
-            title: 'This group has no deliveries, and their active deadline has expired',
-            msg: '<p>Would you like to give the group a new deadline?</p><ul>' +
-                '<li>Choose <strong>yes</strong> to create a new deadline</li>' +
-                '<li>Choose <strong>no</strong> to close the group. This fails the student on this assignment. You can re-open the group at any time.</li>' +
-                '<li>Choose <strong>cancel</strong> to close this window without doing anything.</li>' +
-                '</ul>',
-            buttons: Ext.Msg.YESNOCANCEL,
-            scope: this,
-            closable: false,
-            fn: function(buttonId) {
-                if(buttonId == 'yes') {
-                    this.onCreateNewDeadline()
-                } else if (buttonId == 'no') {
-                    devilry.extjshelpers.assignmentgroup.IsOpen.closeGroup(this.assignmentgroup_recordcontainer);
-                }
-            }
-        });
-    },
-
     getLatestDelivery: function() {
         return this._allDeliveries[0];
     },
@@ -318,11 +262,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     selectDelivery: function(deliveryid) {
         Ext.each(this.items.items, function(deliveriespanel) {
             var index = deliveriespanel.deliveriesStore.find('id', deliveryid);
-            if(index != -1) {
+            if(index !== -1) {
                 var deliveriesgrid = deliveriespanel.down('deliveriesgrid');
-                if(deliveriespanel.collapsed) {
-                    deliveriespanel.toggleCollapse();
-                }
+//                if(deliveriespanel.collapsed) {
+//                    deliveriespanel.toggleCollapse();
+//                }
                 deliveriesgrid.getSelectionModel().select(index);
                 return false; // break
             }

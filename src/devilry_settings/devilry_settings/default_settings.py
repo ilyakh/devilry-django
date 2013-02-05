@@ -1,3 +1,7 @@
+# Enable the Celery task queue
+import djcelery
+djcelery.setup_loader()
+
 
 ########################################################################
 #
@@ -33,11 +37,14 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'django.contrib.sessions',
                   'django.contrib.messages',
                   'django.contrib.admin',
+                  'djcelery',
                   'errortemplates',
                   'crispy_forms',
                   'djangorestframework',
                   'gunicorn',
                   'extjs4',
+                  'haystack',
+                  'celery_haystack',
 
                   'devilry.apps.core',
                   'devilry.apps.theme',
@@ -114,6 +121,24 @@ TEST_FILTER = {
     'include': ['devilry*']
 }
 
+##################################################################################
+#
+# Haystack (search)
+#
+##################################################################################
+HAYSTACK_SITECONF = 'devilry_search.haystack_search_sites'
+HAYSTACK_SEARCH_ENGINE = 'solr'
+HAYSTACK_SOLR_URL = 'http://127.0.0.1:8983/solr'
+
+
+########################################################################
+#
+# Celery
+#
+########################################################################
+BROKER_URL = 'amqp://devilry:secret@localhost:5672/devilryhost'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
 
 ########################################################################
 #
@@ -134,7 +159,7 @@ DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/theme/themes/devilry'
 DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjs4'
 DEVILRY_MATHJAX_URL = 'https://d3eoax9i5htok0.cloudfront.net/mathjax/latest/MathJax.js'
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
-DEVILRY_HELP_URL = 'https://github.com/devilry/devilry-django/wiki'
+DEVILRY_HELP_URL = 'https://devilry-userdoc.readthedocs.org'
 
 #Set max file size to 5MB. Files greater than this size are split into chunks of this size.
 DEVILRY_MAX_ARCHIVE_CHUNK_SIZE = 5000000

@@ -8,7 +8,8 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         'devilry_extjsextras.Router',
         'devilry_header.Breadcrumbs'
     ],
-    
+    cls: 'devilry_subtlebg',
+
     /**
      * @cfg
      */
@@ -38,9 +39,10 @@ Ext.define('devilry.examiner.AssignmentLayout', {
 
         this.heading = Ext.widget('singlerecordview', {
             singlerecordontainer: this.assignment_recordcontainer,
+            margin: '20 0 0 0',
             tpl: Ext.create('Ext.XTemplate',
-                '<div class="section pathheading">',
-                '    <h1><small>{parentnode__parentnode__short_name}.{parentnode__short_name}.</small>{long_name}</h1>',
+                '<div class="section pathheading bootstrap">',
+                    '<h1 style="margin: 0; line-height: 25px;"><small>{parentnode__parentnode__short_name}.{parentnode__short_name}.</small>{long_name}</h1>',
                 '</div>'
             )
         });
@@ -60,7 +62,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
 
     todo_route: function() {
         var todo = this.down('examiner-assignmentlayout-todolist');
-        if(todo != null) { // Will be null for non-electronic
+        if(todo !== null) { // Will be null for non-electronic
             todo.show();
         }
         this._setBreadcrumbsAndTitle();
@@ -83,7 +85,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
                 text: path,
                 url: '#'
             });
-            active = gettext('Students')
+            active = gettext('Students');
         }
         devilry_header.Breadcrumbs.getInBody().set(breadcrumbs, active);
         window.document.title = Ext.String.format('{0} - Devilry', path);
@@ -150,7 +152,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
     },
 
     _onLoadRecord: function() {
-        if(this.assignment_recordcontainer.record.get('delivery_types') == 1) {
+        if(this.assignment_recordcontainer.record.get('delivery_types') === 1) {
             this._nonElectronicLayout();
         } else {
             this._electronicLayout();
@@ -158,5 +160,5 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         this._init();
         this.finishedLoading = true;
         Ext.getBody().unmask();
-    },
+    }
 });

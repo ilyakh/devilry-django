@@ -4,12 +4,13 @@
 Ext.define('devilry_header.Header', {
     extend: 'Ext.container.Container',
     alias: 'widget.devilryheader',
-    margins: '0 0 0 0',
+    margin: '0 0 0 0',
     height: 30, // NOTE: Make sure to adjust $headerHeight in the stylesheet if this is changed
 
     requires: [
         'devilry_header.FlatButton',
         'devilry_header.HoverMenu',
+        'devilry_header.SearchMenu',
         'devilry_header.Roles',
         'devilry_authenticateduserinfo.UserInfo',
         'devilry_header.Breadcrumbs'
@@ -104,6 +105,22 @@ Ext.define('devilry_header.Header', {
                 flex: 1
             }, {
                 xtype: 'devilryheader_flatbutton',
+                itemId: 'searchButton',
+                enableToggle: true,
+                width: 50,
+                tpl: [
+                    '<div class="textwrapper bootstrap">',
+                    '<i class="icon-search icon-white"></i>',
+                    '</div>'
+                ],
+                data: {},
+                listeners: {
+                    scope: this,
+                    render: this._onRenderSearchButton,
+                    toggle: this._onToggleSearchButton
+                }
+            }, {
+                xtype: 'devilryheader_flatbutton',
                 itemId: 'userButton',
                 enableToggle: true,
                 width: 100,
@@ -111,6 +128,14 @@ Ext.define('devilry_header.Header', {
                     scope: this,
                     render: this._onRenderUserButton,
                     toggle: this._onToggleUserButton
+                }
+            }, {
+                // NOTE: This component is floating, so it is not really part of the layout
+                xtype: 'devilryheader_searchmenu',
+                listeners: {
+                    scope: this,
+                    show: this._onShowSearchmenu,
+                    hide: this._onHideSearchmenu
                 }
             }, {
                 // NOTE: This component is floating, so it is not really part of the layout
@@ -133,6 +158,12 @@ Ext.define('devilry_header.Header', {
     },
     _getUserButton: function() {
         return this.down('#userButton');
+    },
+    _getSearchButton: function() {
+        return this.down('#searchButton');
+    },
+    _getSearchMenu: function() {
+        return this.down('devilryheader_searchmenu');
     },
     _getBreadcrumbArea: function() {
         return this.down('#breadcrumbarea');
@@ -169,11 +200,34 @@ Ext.define('devilry_header.Header', {
     },
 
     _onShowHovermenu: function() {
+        this._getSearchButton().setPressedWithEvent(false); // Hide search menu when showing hover menu
         this._getCurrentRoleButton().setPressedCls();
         this._getUserButton().setPressedCls();
     },
     _onHideHovermenu: function() {
         this._getCurrentRoleButton().setNotPressedCls();
         this._getUserButton().setNotPressedCls();
+    },
+
+
+    _onRenderSearchButton:function () {
+        this._getSearchButton().addExtraClass('devilry_header_search_button');
+    },
+
+    _onToggleSearchButton: function(button) {
+        var searchmenu = this._getSearchMenu();
+        if(button.pressed) {
+            searchmenu.show();
+        } else {
+            searchmenu.hide();
+        }
+    },
+
+    _onShowSearchmenu: function() {
+        this._getUserButton().setPressedWithEvent(false); // Hide hover menu when showing search menu
+        this._getSearchButton().setPressedCls();
+    },
+    _onHideSearchmenu: function() {
+        this._getSearchButton().setPressed(false);
     }
 });

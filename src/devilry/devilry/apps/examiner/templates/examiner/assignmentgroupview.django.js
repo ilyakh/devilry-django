@@ -22,15 +22,12 @@
             xtype: 'devilryheader',
             navclass: 'examiner'
         }, {
-            region: 'south',
-            xtype: 'pagefooter'
-        }, {
             region: 'center',
             xtype: 'assignmentgroupoverview',
             assignmentgroupid: {{ objectid }},
             isAdministrator: false,
             canExamine: true,
-            padding: '0 20 0 20',
+            padding: '0',
             listeners: {
                 assignmentGroupLoaded: function(groupRecord) {
                     var path = [

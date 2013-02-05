@@ -16,21 +16,33 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
                 '</div>',
                     '<tpl for="subjects">',
                         '<div class="subject">',
-                            '<div class="subject-name"><a href="">{ long_name }</a></div>',
+                            '<div class="subject-name"><a href="/devilry_subjectadmin/#/subject/{ id }">{ long_name }</a></div>',
                             '<hr />',
                             '<div class="active">',
-                                '<a class="period period-active" href="">V11</a>',
+                                '<a class="period period-active" href="">', '{[this.findActive(parent.subjects.periods)]}', '</a>',
                             '</div>',
                             '<div class="inactive">',
-                                '<tpl for="periods">',
-                                '<a class="period" href="">{ short_name }</a>',
+                            '<tpl for="periods">',
+                                '<a class="period  ',
+                                '<tpl if="is_active">',
+                                    'emphasized',
                                 '</tpl>',
-                                '<a class="period period-ellipsis" href="">...</a>',
+                                '" href="/devilry_subjectadmin/#/period/{ id }/">{ short_name }</a>',
+                            '</tpl>',
+                            '<a class="period period-ellipsis" href="">...</a>',
                             '</div>',
                         '</div>',
                     '</tpl>',
             '</tpl>',
-        '</tpl>'
+        '</tpl>',
+        {
+            findActive: function( periods ) {
+                Ext.Array.each( periods, function(e) {
+                    console.log( e )
+                } )
+            }
+        }
+
     ],
 
     itemSelector: 'li .course',

@@ -11,7 +11,6 @@ urlpatterns = \
 patterns('devilry_nodeadmin.rest',
     url( r'^$', emptyview ),
     # default view, lists all related nodes: nodes that a user administers
-    url( r'^tree/$', NodeTree.as_view() ),
     url( r'^nodes/$', RelatedNodes.as_view() ),
     # navigation, lists node data and subsequent children
     url( r'^node/(?P<pk>\d+)/details$', RelatedNodeDetails.as_view() ),

@@ -49,55 +49,62 @@
   margin-right: 50px;
 }
 
-/* line 54, ../sass/devilry_nodeadmin.scss */
-.secondary {
-  line-height: 20px;
+/* line 56, ../sass/devilry_nodeadmin.scss */
+.devilry_nodeadmin_secondary .footer {
+  margin: 20px 0px 20px 0px;
 }
 
-/* line 60, ../sass/devilry_nodeadmin.scss */
+/* line 64, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodedetailsoverview h3 {
   font-style: italic;
 }
-/* line 64, ../sass/devilry_nodeadmin.scss */
+/* line 68, ../sass/devilry_nodeadmin.scss */
+.devilry_nodeadmin_nodedetailsoverview hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+/* line 73, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodedetailsoverview .subject {
-  max-width: 400px;
-  /* element width */
-  padding: 0.2em 0.2em 0.5em 0.2em;
+  padding: 0em 0.2em 0.8em 0.2em;
   margin: 0.5em 0em 10px 0.5em;
   border: 1px solid gainsboro;
   border-radius: 0.5em;
   overflow: auto;
 }
-/* line 75, ../sass/devilry_nodeadmin.scss */
+/* line 83, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodedetailsoverview .subject-name {
   clear: both;
   padding: 1em 0.2em 0em 0.6em;
 }
-/* line 80, ../sass/devilry_nodeadmin.scss */
+/* line 88, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodedetailsoverview .active {
   float: left;
   width: 30%;
 }
-/* line 84, ../sass/devilry_nodeadmin.scss */
+/* line 92, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodedetailsoverview .inactive {
   float: left;
   width: 65%;
 }
-/* line 88, ../sass/devilry_nodeadmin.scss */
+/* line 96, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodedetailsoverview .period {
   float: left;
-  width: 32%;
+  width: 23%;
   /* period block width */
   display: inline-block;
   padding: 2px;
   text-align: left;
 }
-/* line 97, ../sass/devilry_nodeadmin.scss */
+/* line 105, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodedetailsoverview .period a {
   font-style: italic;
   text-decoration: none;
 }
-/* line 102, ../sass/devilry_nodeadmin.scss */
+/* line 110, ../sass/devilry_nodeadmin.scss */
+.devilry_nodeadmin_nodedetailsoverview .emphasized {
+  text-decoration: underline;
+}
+/* line 114, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodedetailsoverview .period-active {
   text-align: center;
   font-weight: bold;
